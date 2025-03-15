@@ -1,6 +1,6 @@
 import requests
 
-from abstract_class_api import AbstractAPI
+from src.abstract_class_api import AbstractAPI
 
 
 class HeadHunterAPI(AbstractAPI):
