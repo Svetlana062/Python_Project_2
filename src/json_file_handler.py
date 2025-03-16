@@ -1,46 +1,61 @@
 import json
 import os
-from typing import List
+from typing import Any, Dict, List
 
-from .abstract_file_handler import AbstractFileHandler
+from src.abstract_file_handler import AbstractFileHandler
 
 
 class JSONFileHandler(AbstractFileHandler):
-    """Создать класс для сохранения информации о вакансиях в JSON-файл."""
+    """Класс для работы с данными о вакансиях в формате JSON."""
 
-    def __init__(self, filename: str = "data/vacancies.json"):
-        self._filename = filename  # имя файла
+    def __init__(self, filename: str = "../data/vacancies.json"):
+        self.__filename = filename  # приватное имя файла для хранения данных
 
-    def load(self) -> List[dict]:
+    def load(self) -> List[Dict[str, Any]]:
         """Загружает данные из файла JSON."""
-
-        if os.path.exists(self._filename):
+        if os.path.exists(self.__filename):
             try:
-                with open(self._filename, "r", encoding="utf-8") as file:
+                with open(self.__filename, "r", encoding="utf-8") as file:
                     return json.load(file)
             except json.JSONDecodeError:  # Обработка ошибки загрузки JSON
                 return []
         return []
 
-    def save(self, data) -> None:
+    def save(self, data: Dict[str, Any]) -> None:
         """Сохраняет данные в файл JSON."""
-
         existing_data = self.load()
-        existing_data.append(data)
+        if data not in existing_data:  # Проверка на уникальность данных
+            existing_data.append(data)
         try:
-            with open(self._filename, "w", encoding="utf-8") as file:
+            with open(self.__filename, "w", encoding="utf-8") as file:
                 json.dump(existing_data, file, ensure_ascii=False, indent=4)
         except Exception as e:  # Обработка любых других ошибок записи
             print(f"Ошибка при сохранении данных: {e}")
 
-    def delete(self, data) -> None:
+    def delete(self, data: Dict[str, Any]) -> None:
         """Удаляет данные из файла JSON."""
-
         existing_data = self.load()
         if data in existing_data:
             existing_data.remove(data)
             try:
-                with open(self._filename, "w", encoding="utf-8") as file:
+                with open(self.__filename, "w", encoding="utf-8") as file:
                     json.dump(existing_data, file, ensure_ascii=False, indent=4)
             except Exception as e:
                 print(f"Ошибка при удалении данных: {e}")
+
+    def clear(self) -> None:
+        """Очищает все данные из файла JSON."""
+        try:
+            with open(self.__filename, "w", encoding="utf-8") as file:
+                file.write("[]")  # Запись пустого списка в файл
+        except Exception as e:
+            print(f"Ошибка при очистке данных: {e}")
+
+
+if __name__ == "__main__":
+    handler = JSONFileHandler()
+    sample_data = {"title": "Программист", "salary": 60000}
+
+    # Сохранение данных
+    handler.save(sample_data)
+    print("Данные успешно сохранены.")

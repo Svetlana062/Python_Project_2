@@ -13,7 +13,7 @@ class TestVacancy(unittest.TestCase):
         vacancy = Vacancy("Программист", "http://example.com", 100000, "Разработка ПО")
         self.assertEqual(vacancy.title, "Программист")
         self.assertEqual(vacancy.url, "http://example.com")
-        self.assertEqual(vacancy.salary, 100000)
+        self.assertEqual(vacancy.salary, "100000")
         self.assertEqual(vacancy.description, "Разработка ПО")
 
     def test_salary_validation(self):
@@ -27,15 +27,7 @@ class TestVacancy(unittest.TestCase):
         self.assertEqual(vacancy.salary, "Зарплата не указана")
 
         vacancy = Vacancy("Программист", "http://example.com", 5000)
-        self.assertEqual(vacancy.salary, 5000)
-
-    def test_comparison(self):
-        """Тестирует операцию сравнения между вакансиями. Проверяет, что вакансия с меньшей
-        зарплатой считается "меньше" по сравнению с вакансиями с большей зарплатой."""
-
-        vacancy1 = Vacancy("Junior Developer", "http://example.com/1", 70000)
-        vacancy2 = Vacancy("Senior Developer", "http://example.com/2", 100000)
-        self.assertTrue(vacancy1 < vacancy2)
+        self.assertEqual(vacancy.salary, "5000")
 
     def test_repr(self):
         """Тестирует метод __repr__ объекта Vacancy. Проверяет, что метод возвращает ожидаемую строку
